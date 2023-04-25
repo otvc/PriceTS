@@ -1,0 +1,24 @@
+path_to_save: models/
+name: CatEmbLSTM
+
+dataset:
+  path_to_train: data/train_dataset.pt
+  path_to_test: data/test_dataset.pt
+  path_to_clean: data/milk_clean.csv
+  BATCH_SIZE: 64
+  is_shuffle: false 
+  cat_feature: price_zone_&_class_name
+  num_workers: 1
+
+
+model:
+  LSTM_H: 64
+  LSTM_NUM_LAYERS: 1
+  EMB_H: 32
+  LR: 0.00001
+  BETAS: [0.999, 0.999]
+  EPOCHS: 0
+
+optimizer: 'SGD'
+
+
