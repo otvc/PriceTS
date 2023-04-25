@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     EPOCHS = params['model']['EPOCHS']#5
 
-    train_CatEmbLSTM(model, train_dataloader, test_dataloader, optimizer, criterion, EPOCHS)
+    train_CatEmbLSTM(model, train_dataloader, test_dataloader, optimizer, criterion, EPOCHS, device = device)
 
     torch.save(optimizer, params['path_to_save'] + params['name'] + '_optimizer.pt')
     torch.save(model, params['path_to_save'] + params['name'] + '.pt')

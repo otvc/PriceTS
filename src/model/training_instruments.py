@@ -5,7 +5,7 @@ import torch
 from tqdm import tqdm
 
 
-def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_price'):
+def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_price', device = 'cpu'):
     feat_iter = iter(feature_keys)
     
     batch = batch_dict[next(feat_iter)]
@@ -22,7 +22,7 @@ def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_price'
     
     target_val = batch_dict[target]
     
-    return (batch.to(torch.float32), batch_cat), target_val.to(torch.float32)
+    return (batch.to(torch.float32).to(device), batch_cat.to(device)), target_val.to(torch.float32).to(device)
 
 def plot_train_process(train_loss, val_loss, title_suffix=''):
     fig, axes = plt.subplots(1, 2, figsize=(15, 5))
@@ -35,10 +35,10 @@ def plot_train_process(train_loss, val_loss, title_suffix=''):
     plt.show()
     
 
-def train_loop(model, train_dataloader, optimizer, criterion, batch_transform):
+def train_loop(model, train_dataloader, optimizer, criterion, batch_transform, device = 'cpu'):
     losses = []
     for batch in tqdm(train_dataloader):
-        X_batch, y_batch = batch_transform(batch)
+        X_batch, y_batch = batch_transform(batch, device = device)
         
         output = model(X_batch)
         loss = criterion(output, y_batch)
@@ -48,20 +48,20 @@ def train_loop(model, train_dataloader, optimizer, criterion, batch_transform):
         optimizer.step()
     return torch.Tensor(losses).mean()
 
-def val_loop(model, dataloader, criterion, batch_transform):
+def val_loop(model, dataloader, criterion, batch_transform, device = 'cpu'):
     losses = []
     for batch in dataloader:
-        X_batch, y_batch = batch_transform(batch)
+        X_batch, y_batch = batch_transform(batch, device = device)
         output = model(X_batch)
         loss = criterion(output, y_batch)
         losses.append(loss)
     return torch.Tensor(losses).mean()
 
-def test_loop(model, dataloader, batch_transform):
+def test_loop(model, dataloader, batch_transform, device = 'cpu'):
     y_pred = []
     y_gt = []
     for batch in dataloader:
-        X_batch, y_batch = batch_transform(batch)
+        X_batch, y_batch = batch_transform(batch, device = device)
         output = model(X_batch)
         y_pred.append(output)
         y_gt.append(y_batch)
@@ -73,14 +73,14 @@ def test_loop(model, dataloader, batch_transform):
     `every_epoch`: every  `every_epoch` we should calculate metrics on val dataset.
 '''
 def train(model, train_dataloader, val_dataloader, optimizer, criterion, batch_transform, 
-          epochs:int = 100, plot_loss:bool = True, every_epoch:int = 5):
+          epochs:int = 100, plot_loss:bool = True, every_epoch:int = 5, device = 'cpu'):
     train_loss_per_epoch = []
     val_loss_per_epoch = []
     for e in tqdm(range(1, epochs+1)):
-        loss = train_loop(model, train_dataloader, optimizer, criterion, batch_transform)
+        loss = train_loop(model, train_dataloader, optimizer, criterion, batch_transform, device = device)
         if e % every_epoch == 0:
             with torch.no_grad():
-                val_loss = val_loop(model, val_dataloader, criterion, batch_transform)
+                val_loss = val_loop(model, val_dataloader, criterion, batch_transform, device = device)
             
             train_loss_per_epoch.append(loss)
             val_loss_per_epoch.append(val_loss)
@@ -96,10 +96,11 @@ def train(model, train_dataloader, val_dataloader, optimizer, criterion, batch_t
 
 def unpack_CatEmbLSTM(batch,
                       numeric_features = ['StoreInventory', 'sales_cost_x', 'sales_value', 'price', 'cost', 'sales_cost_y'],
-                      cat_features = ['price_zone_&_class_name']):
-    return dict_to_input(batch, numeric_features, cat_features[0], target = 'target_price')
+                      cat_features = ['price_zone_&_class_name'],
+                      device = 'cpu'):
+    return dict_to_input(batch, numeric_features, cat_features[0], target = 'target_price', device = device)
 
 def train_CatEmbLSTM(model, train_dataloader, val_dataloader, optimizer, criterion, 
-                             epochs = 100, every_epoch = 1, plot_loss = True):
+                             epochs = 100, every_epoch = 1, plot_loss = True, device = 'cpu'):
     return train(model, train_dataloader, val_dataloader, optimizer, criterion, unpack_CatEmbLSTM, 
-                 epochs=epochs, every_epoch = every_epoch, plot_loss = plot_loss)
+                 epochs=epochs, every_epoch = every_epoch, plot_loss = plot_loss, device = device)
