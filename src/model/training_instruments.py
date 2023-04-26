@@ -24,15 +24,15 @@ def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_price'
     
     return (batch.to(torch.float32).to(device), batch_cat.to(device)), target_val.to(torch.float32).to(device)
 
-def plot_train_process(train_loss, val_loss, title_suffix=''):
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
+def plot_train_process(train_loss, val_loss, title_suffix='', path = 'artefacts/', name = 'CatEmbLoss'):
+    fig, axes = plt.subplots(1, 1, figsize=(15, 5))
 
-    axes[0].set_title(' '.join(['Loss', title_suffix]))
-    axes[0].plot(train_loss, label='train')
-    axes[0].plot(val_loss, label='validation')
-    axes[0].legend()
+    axes.set_title(' '.join(['Loss', title_suffix]))
+    axes.plot(train_loss, label='train')
+    axes.plot(val_loss, label='validation')
+    axes.legend()
 
-    plt.show()
+    plt.savefig(path + name + '.png')
     
 
 def train_loop(model, train_dataloader, optimizer, criterion, batch_transform, device = 'cpu'):
