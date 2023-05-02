@@ -20,6 +20,11 @@ model:
   BETAS: [0.999, 0.999]
   EPOCHS: 5
 
+fine-tune:
+  use_saved_model: true
+  optimizer_path: models/CatEmbLSTM.pt
+  model_path: models/CatEmbLSTM_optimizer.pt
+
 optimizer: 'SGD'
 
 

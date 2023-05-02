@@ -2,6 +2,8 @@ import sys
 
 sys.path.insert(0, './src/')
 
+import os
+
 import yaml
 
 import pandas as pd
@@ -37,6 +39,35 @@ def load_dataset(path_to_train, path_to_test):
 
     return train_dataset, test_dataset
 
+def choose_model(params):
+    milk_clean = pd.read_csv(params['dataset']['path_to_clean'])
+
+
+    N_EMB_CLS = milk_clean[params['dataset']['cat_feature']].unique().shape[0]
+    EMB_H = params['model']['EMB_H']#32
+
+    NUM_INPUT_SIZE = len(test_dataset[0].keys()) - 2
+    LSTM_H = params['model']['LSTM_H']#128
+    LSTM_NUM_LAYERS = params['model']['LSTM_NUM_LAYERS']#1
+
+    if (not params['fine-tune']['use_saved_model']) and os.path.isfile(params['fine-tune']['model_path']).is_file():
+        model = CatEmbLSTM(NUM_INPUT_SIZE, LSTM_H, LSTM_NUM_LAYERS, N_EMB_CLS, EMB_H).to(device)
+    else:
+        model = torch.load(params['fine-tune']['model_path'])
+
+    LR = params['model']['LR'] #1e-3
+
+    if (not params['fine-tune']['use_saved_model']) and os.path.isfile(params['fine-tune']['optimizer_path']).is_file():
+        if params['optimizer'] == 'Adam':
+            BETAS = params['model']['BETAS']#(0.999, 0.999)
+            optimizer = optim.Adam(model.parameters(), lr = LR, betas = BETAS)
+        elif params['optimizer'] == 'SGD':
+            optimizer = optim.SGD(model.parameters(), lr = LR)
+    else:
+        optimizer = torch.load(params['fine-tune']['optimizer_path'])
+    
+    return model, optimizer
+
 if __name__ == '__main__':
     params = load_config_params()
 
@@ -48,27 +79,9 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(train_dataset,  batch_size = BATCH_SIZE, shuffle = is_shuffle, num_workers = params['dataset']['num_workers'])
     test_dataloader = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = is_shuffle, num_workers = params['dataset']['num_workers'])
 
-    NUM_INPUT_SIZE = len(test_dataset[0].keys()) - 2
-    LSTM_H = params['model']['LSTM_H']#128
-    LSTM_NUM_LAYERS = params['model']['LSTM_NUM_LAYERS']#1
+    model, optimizer = choose_model(params)
 
-    milk_clean = pd.read_csv(params['dataset']['path_to_clean'])
-
-
-    N_EMB_CLS = milk_clean[params['dataset']['cat_feature']].unique().shape[0]
-    EMB_H = params['model']['EMB_H']#32
-
-    model = CatEmbLSTM(NUM_INPUT_SIZE, LSTM_H, LSTM_NUM_LAYERS, N_EMB_CLS, EMB_H).to(device)
-
-    LR = params['model']['LR'] #1e-3
     REDUCTION = 'mean'
-
-    if params['optimizer'] == 'Adam':
-        BETAS = params['model']['BETAS']#(0.999, 0.999)
-        optimizer = optim.Adam(model.parameters(), lr = LR, betas = BETAS)
-    elif params['optimizer'] == 'SGD':
-        optimizer = optim.SGD(model.parameters(), lr = LR)
-
     criterion = nn.MSELoss(reduction = REDUCTION)
 
     EPOCHS = params['model']['EPOCHS']#5
