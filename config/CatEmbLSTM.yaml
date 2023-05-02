@@ -21,7 +21,7 @@ model:
   EPOCHS: 5
 
 fine-tune:
-  use_saved_model: true
+  use_saved_model: false
   optimizer_path: models/CatEmbLSTM.pt
   model_path: models/CatEmbLSTM_optimizer.pt
 
