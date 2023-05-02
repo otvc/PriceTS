@@ -67,21 +67,43 @@ def test_loop(model, dataloader, batch_transform, device = 'cpu'):
         y_gt.append(y_batch)
     return y_pred, y_gt
 
+
+def save_stage(model:torch.nn.Module, 
+               optim:torch.optim.Optimizer, 
+               path_to_save:str, 
+               model_name:str, 
+               stage_num:int):
+    torch.save(model, path_to_save + model_name + '_optimizer' + '_' + str(stage_num) + '.pt')
+    torch.save(optim, path_to_save + model_name + '_optimizer' + '_' + str(stage_num) + '.pt')
+
+
 '''
 `params`:
     `plot_loss`:bool: value regulating plotting losses;
     `every_epoch`: every  `every_epoch` we should calculate metrics on val dataset.
 '''
-def train(model, train_dataloader, val_dataloader, optimizer, criterion, batch_transform, 
-          epochs:int = 100, plot_loss:bool = True, every_epoch:int = 5, device = 'cpu'):
+def train(model, 
+          train_dataloader, 
+          val_dataloader, 
+          optimizer, 
+          criterion, 
+          batch_transform, 
+          epochs:int = 100, 
+          plot_loss:bool = True, 
+          every_epoch:int = 5, 
+          device = 'cpu', 
+          path_to_stages = '../../models/stages/',
+          model_name = 'CatEmbLoss'):
     train_loss_per_epoch = []
     val_loss_per_epoch = []
     for e in tqdm(range(1, epochs+1)):
         loss = train_loop(model, train_dataloader, optimizer, criterion, batch_transform, device = device)
         if e % every_epoch == 0:
+            save_stage(model, optimizer, path_to_stages, model_name, e)
+
             with torch.no_grad():
                 val_loss = val_loop(model, val_dataloader, criterion, batch_transform, device = device)
-            
+
             train_loss_per_epoch.append(loss)
             val_loss_per_epoch.append(val_loss)
 
@@ -100,7 +122,16 @@ def unpack_CatEmbLSTM(batch,
                       device = 'cpu'):
     return dict_to_input(batch, numeric_features, cat_features[0], target = 'target_price', device = device)
 
-def train_CatEmbLSTM(model, train_dataloader, val_dataloader, optimizer, criterion, 
-                             epochs = 100, every_epoch = 1, plot_loss = True, device = 'cpu'):
+def train_CatEmbLSTM(model,
+                     train_dataloader,
+                     val_dataloader,
+                     optimizer, criterion, 
+                     epochs = 100,
+                     every_epoch = 1,
+                     plot_loss = True,
+                     device = 'cpu',
+                     path_to_stages = '../../models/stages/',
+                     model_name = 'CatEmbLoss'):
     return train(model, train_dataloader, val_dataloader, optimizer, criterion, unpack_CatEmbLSTM, 
-                 epochs=epochs, every_epoch = every_epoch, plot_loss = plot_loss, device = device)
+                 epochs = epochs, every_epoch = every_epoch, plot_loss = plot_loss, device = device,
+                 path_to_stages = path_to_stages, model_name = model_name)

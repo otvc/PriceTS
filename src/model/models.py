@@ -10,7 +10,7 @@ class CatEmbLSTM(nn.Module):
         self.norm = nn.LayerNorm(emb_h)
         self.lin_reg = nn.Linear(lstm_h, 1)
 
-        self.norm_num_features =  nn.LayerNorm(num_input_size)
+        self.norm_num_features =  nn.BatchNorm1d(num_input_size)
 
         
     def forward(self, x):
