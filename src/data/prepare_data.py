@@ -133,9 +133,9 @@ def get_args_from_config(path_to_config = 'config/dataset_v0.yaml'):
     config['date_split'] = datetime(config['date_split'].year, config['date_split'].month, config['date_split'].day)
     return config
 
-def prepare_dataset_v0(config,
-                       train_ds_name = 'train_dataset.pt',
-                       test_ds_name = 'test_dataset.pt'):
+def prepare_train_dataset_v0(config,
+                             train_ds_name = 'train_dataset.pt',
+                             test_ds_name = 'test_dataset.pt'):
     
     data, _ = preparing_dataframe(config['path_to_data'],
                                   config['to_float_point_feat'],
@@ -153,8 +153,33 @@ def prepare_dataset_v0(config,
                                                    config['cat_features'])
     
     data.to_csv(config['path_to_save'] + 'milk_clean.csv')
-    torch.save(train_dataset, config['path_to_save'] + train_ds_name)
-    torch.save(test_dataset, config['path_to_save'] + test_ds_name)
+    torch.save(train_dataset, config['train_process']['path_to_save'] + train_ds_name)
+    torch.save(test_dataset, config['train_process']['path_to_save'] + test_ds_name)
+
+def prepare_inference_datset_v0(config,
+                                inference_ds_name = 'milk_inference.pt'):
+    data, _ = preparing_dataframe(config['path_to_data'],
+                                  config['to_float_point_feat'],
+                                  config['nan_features'],
+                                  config['numeric_features'],
+                                  config['cat_features'],
+                                  config['date_feature'],
+                                  config['ts_by_features'])
+    inference_dataset = create_dataset_by_concat(data,
+                                                 config['date_feature'],
+                                                 config['date_split'],
+                                                 config['n_prev_days'],
+                                                 config['numeric_features'],
+                                                 config['cat_features'])
+    data.to_csv(config['path_to_save'] + 'milk_clean_inference.csv')
+    torch.save(inference_dataset, config['inference_process']['path_to_save'] + inference_ds_name)
+
+def prepare_dataset_v0(config):
+    if config['is_train_process']:
+        prepare_train_dataset_v0(config)
+    else:
+        prepare_inference_datset_v0(config)
+
 
 if __name__ == '__main__':
     config = get_args_from_config()
