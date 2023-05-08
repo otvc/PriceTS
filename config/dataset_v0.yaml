@@ -4,8 +4,8 @@ numeric_features: ['StoreInventory', 'sales_cost_x', 'sales_value', 'price', 'co
 cat_features: ['price_zone_&_class_name']
 date_feature: 'date'
 ts_by_features: ['class_name', 'item', 'store']
-path_to_data: data/pd_milk_data.csv
-path_to_save: data/
+path_to_data: data/input/pd_milk_data.csv
+path_to_save: data/input/
 
 date_split: 2023-03-01
 n_prev_days: 5

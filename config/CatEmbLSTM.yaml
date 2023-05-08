@@ -3,9 +3,9 @@ path_to_save_stages: models/stages/
 name: CatEmbLSTM
 
 dataset:
-  path_to_train: data/train_dataset.pt
-  path_to_test: data/test_dataset.pt
-  path_to_clean: data/milk_clean.csv
+  path_to_train: data/input/train_dataset.pt
+  path_to_test: data/input/test_dataset.pt
+  path_to_clean: data/input/milk_clean.csv
   BATCH_SIZE: 64
   is_shuffle: false 
   cat_feature: price_zone_&_class_name
