@@ -137,7 +137,7 @@ def prepare_train_dataset_v0(config,
                              train_ds_name = 'train_dataset.pt',
                              test_ds_name = 'test_dataset.pt'):
     
-    data, _ = preparing_dataframe(config['path_to_data'],
+    data, _ = preparing_dataframe(config['train_process']['path_to_data'],
                                   config['to_float_point_feat'],
                                   config['nan_features'],
                                   config['numeric_features'],
@@ -152,13 +152,13 @@ def prepare_train_dataset_v0(config,
                                                    config['numeric_features'],
                                                    config['cat_features'])
     
-    data.to_csv(config['path_to_save'] + 'milk_clean.csv')
+    data.to_csv(config['train_process']['path_to_save'] + 'milk_clean.csv')
     torch.save(train_dataset, config['train_process']['path_to_save'] + train_ds_name)
     torch.save(test_dataset, config['train_process']['path_to_save'] + test_ds_name)
 
 def prepare_inference_datset_v0(config,
                                 inference_ds_name = 'milk_inference.pt'):
-    data, _ = preparing_dataframe(config['path_to_data'],
+    data, _ = preparing_dataframe(config['inference_process']['path_to_data'],
                                   config['to_float_point_feat'],
                                   config['nan_features'],
                                   config['numeric_features'],
@@ -171,7 +171,7 @@ def prepare_inference_datset_v0(config,
                                                  config['n_prev_days'],
                                                  config['numeric_features'],
                                                  config['cat_features'])
-    data.to_csv(config['path_to_save'] + 'milk_clean_inference.csv')
+    data.to_csv(config['inference_process']['path_to_save'] + 'milk_clean_inference.csv')
     torch.save(inference_dataset, config['inference_process']['path_to_save'] + inference_ds_name)
 
 def prepare_dataset_v0(config):
