@@ -25,6 +25,6 @@ fine-tune:
   optimizer_path: models/CatEmbLSTM.pt
   model_path: models/CatEmbLSTM_optimizer.pt
 
-optimizer: 'SGD'
+optimizer: 'Adam'
 
 

@@ -1,0 +1,10 @@
+dataset:
+  path_to_input: data/input/milk_inference.pt
+  path_to_output: data/output/inf_CatEmbLSTM.csv
+  batch_size: 64
+  num_workers: 1
+  lag: 5
+  target: 'price'
+
+model:
+  path: models/CatEmbLSTM.pt

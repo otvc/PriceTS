@@ -7,7 +7,7 @@ ts_by_features: ['class_name', 'item', 'store']
 date_split: 2023-03-01
 n_prev_days: 5
 
-is_train_process: false
+is_train_process: true
 
 train_process:
   path_to_data: data/input/pd_milk_data.csv
