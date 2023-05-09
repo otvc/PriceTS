@@ -135,3 +135,6 @@ def train_CatEmbLSTM(model,
     return train(model, train_dataloader, val_dataloader, optimizer, criterion, unpack_CatEmbLSTM, 
                  epochs = epochs, every_epoch = every_epoch, plot_loss = plot_loss, device = device,
                  path_to_stages = path_to_stages, model_name = model_name)
+
+def inference_CatEmbLSTM(model, dataloader, device = 'cpu'):
+    return test_loop(model, dataloader, unpack_CatEmbLSTM, device = device)

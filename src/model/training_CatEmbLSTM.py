@@ -50,21 +50,22 @@ def choose_model(params):
     LSTM_H = params['model']['LSTM_H']#128
     LSTM_NUM_LAYERS = params['model']['LSTM_NUM_LAYERS']#1
 
-    if (not params['fine-tune']['use_saved_model']) and os.path.isfile(params['fine-tune']['model_path']).is_file():
-        model = CatEmbLSTM(NUM_INPUT_SIZE, LSTM_H, LSTM_NUM_LAYERS, N_EMB_CLS, EMB_H).to(device)
-    else:
+    if params['fine-tune']['use_saved_model'] and os.path.isfile(params['fine-tune']['model_path']):
         model = torch.load(params['fine-tune']['model_path'])
+    else:
+        model = CatEmbLSTM(NUM_INPUT_SIZE, LSTM_H, LSTM_NUM_LAYERS, N_EMB_CLS, EMB_H).to(device)
+
 
     LR = params['model']['LR'] #1e-3
 
-    if (not params['fine-tune']['use_saved_model']) and os.path.isfile(params['fine-tune']['optimizer_path']).is_file():
+    if params['fine-tune']['use_saved_model'] and os.path.isfile(params['fine-tune']['optimizer_path']):
+        optimizer = torch.load(params['fine-tune']['optimizer_path'])
+    else:
         if params['optimizer'] == 'Adam':
             BETAS = params['model']['BETAS']#(0.999, 0.999)
             optimizer = optim.Adam(model.parameters(), lr = LR, betas = BETAS)
         elif params['optimizer'] == 'SGD':
             optimizer = optim.SGD(model.parameters(), lr = LR)
-    else:
-        optimizer = torch.load(params['fine-tune']['optimizer_path'])
     
     return model, optimizer
 
