@@ -39,11 +39,12 @@ if __name__ == '__main__':
     params = load_config_params()
 
     batch_size = params['dataset']['batch_size']#256
-    inference_dataset = load_dataset(params['dataset']['path_to_input'], params['dataset']['path_to_output'])
+    inference_dataset = load_dataset(params['dataset']['path_to_input'])
     inference_dataloader = DataLoader(inference_dataset,  batch_size = batch_size, num_workers = params['dataset']['num_workers'])
 
     model = choose_model(params)
     predicted_values = inference_CatEmbLSTM(model, inference_dataloader)
     
-    output = pd.DataFrame({params['target']: predicted_values.detach().cpu().numpy()})
-    output.to_csv(params['path_to_output'])
+    output = pd.DataFrame({params['dataset']['target']:
+                           torch.cat(predicted_values[0]).detach().cpu().numpy()})
+    output.to_csv(params['dataset']['path_to_output'])
