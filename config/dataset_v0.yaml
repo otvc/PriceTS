@@ -10,7 +10,7 @@ n_prev_days: 5
 is_train_process: true
 
 train_process:
-  path_to_data: data/input/pd_milk_data.csv
+  path_to_data: data/output/pd_milk_data_item.csv
   path_to_save: data/input/
 
 inference_process:
