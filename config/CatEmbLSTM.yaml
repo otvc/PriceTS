@@ -16,9 +16,9 @@ model:
   LSTM_H: 64
   LSTM_NUM_LAYERS: 1
   EMB_H: 32
-  LR: 0.00001
+  LR: 0.0003
   BETAS: [0.999, 0.999]
-  EPOCHS: 5
+  EPOCHS: 25
 
 fine-tune:
   use_saved_model: false

@@ -37,7 +37,7 @@ def plot_train_process(train_loss, val_loss, title_suffix='', path = 'artefacts/
 
 def train_loop(model, train_dataloader, optimizer, criterion, batch_transform, device = 'cpu'):
     losses = []
-    for batch in tqdm(train_dataloader):
+    for batch in train_dataloader:
         X_batch, y_batch = batch_transform(batch, device = device)
         
         output = model(X_batch)

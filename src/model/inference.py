@@ -6,7 +6,10 @@ from torch import optim
 from torch.utils.data import DataLoader, Dataset
 from torch import nn
 import torch
+
 import pandas as pd
+
+from  tqdm import tqdm
 
 from models import CatEmbLSTM
 from training_instruments import train_CatEmbLSTM, inference_CatEmbLSTM
@@ -43,15 +46,15 @@ if __name__ == '__main__':
     inference_dataset = load_dataset(params['dataset']['path_to_input'])
     model = choose_model(params)
     output = None
-    for part_dataset in inference_dataset.datasets:
+    for part_dataset in tqdm(inference_dataset.datasets):
         inference_dataloader = DataLoader(part_dataset,
                                           batch_size=batch_size,
                                           num_workers=params['dataset']['num_workers'])
         predicted_values = inference_CatEmbLSTM(model, inference_dataloader)
-        print(part_dataset)
         part_dataset.data['predicted'] = None
-        part_dataset.iloc[params['dataset']['lag']:,
-                          'predicted'] = torch.cat(predicted_values[0])
-        output = pd.concat([output, part_dataset])
+        part_dataset.data.index = range(part_dataset.data.shape[0])
+        part_dataset.data.loc[params['dataset']['lag']:,
+                               'predicted'] = torch.cat(predicted_values[0]).detach().cpu().numpy()
+        output = pd.concat([output, part_dataset.data])
 
     output.to_csv(params['dataset']['path_to_output'])
