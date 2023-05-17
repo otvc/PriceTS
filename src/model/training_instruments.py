@@ -86,7 +86,8 @@ def train(model,
           train_dataloader, 
           val_dataloader, 
           optimizer, 
-          criterion, 
+          criterion,
+          scheduler:torch.optim.lr_scheduler.LinearLR,
           batch_transform, 
           epochs:int = 100, 
           plot_loss:bool = True, 
@@ -106,7 +107,7 @@ def train(model,
 
             train_loss_per_epoch.append(loss)
             val_loss_per_epoch.append(val_loss)
-
+        scheduler.step()
         if plot_loss and e % every_epoch == 0:
             plot_train_process(train_loss_per_epoch, val_loss_per_epoch)
             
@@ -125,14 +126,15 @@ def unpack_CatEmbLSTM(batch,
 def train_CatEmbLSTM(model,
                      train_dataloader,
                      val_dataloader,
-                     optimizer, criterion, 
+                     optimizer, criterion,
+                     scheduler,
                      epochs = 100,
                      every_epoch = 1,
                      plot_loss = True,
                      device = 'cpu',
                      path_to_stages = '../../models/stages/',
                      model_name = 'CatEmbLoss'):
-    return train(model, train_dataloader, val_dataloader, optimizer, criterion, unpack_CatEmbLSTM, 
+    return train(model, train_dataloader, val_dataloader, optimizer, criterion, scheduler, unpack_CatEmbLSTM, 
                  epochs = epochs, every_epoch = every_epoch, plot_loss = plot_loss, device = device,
                  path_to_stages = path_to_stages, model_name = model_name)
 

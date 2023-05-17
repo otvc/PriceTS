@@ -9,8 +9,8 @@ import yaml
 import pandas as pd
 
 import torch
-from torch import nn
-from torch import optim 
+from torch import nn, optim
+from torch.optim.lr_scheduler import LinearLR
 from torch.utils.data import DataLoader, Dataset
 
 from data.prepare_data import MilkTSDataset
@@ -67,7 +67,9 @@ def choose_model(params):
         elif params['optimizer'] == 'SGD':
             optimizer = optim.SGD(model.parameters(), lr = LR)
     
-    return model, optimizer
+    scheduler = LinearLR(optimizer=optimizer, start_factor=1.0, end_factor=0.01, total_iters=params['model']['EPOCHS'])
+    
+    return model, optimizer, scheduler
 
 if __name__ == '__main__':
     params = load_config_params()
@@ -80,15 +82,19 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(train_dataset,  batch_size = BATCH_SIZE, shuffle = is_shuffle, num_workers = params['dataset']['num_workers'])
     test_dataloader = DataLoader(test_dataset, batch_size = BATCH_SIZE, shuffle = is_shuffle, num_workers = params['dataset']['num_workers'])
 
-    model, optimizer = choose_model(params)
+    model, optimizer, scheduler = choose_model(params)
 
     REDUCTION = 'mean'
-    criterion = nn.MSELoss(reduction = REDUCTION)
+
+    if params['loss_type'] == 'L1':
+        criterion = nn.L1Loss(reduce=REDUCTION)
+    elif params['loss_type'] == 'L2':
+        criterion = nn.MSELoss(reduction = REDUCTION)
 
     EPOCHS = params['model']['EPOCHS']#5
 
-    train_CatEmbLSTM(model, train_dataloader, test_dataloader, optimizer, criterion, EPOCHS, device = device, 
-                     path_to_stages = params['path_to_save_stages'], model_name = params['name'])
+    train_CatEmbLSTM(model, train_dataloader, test_dataloader, optimizer, criterion, scheduler, EPOCHS, device = device, 
+                     path_to_stages = params['path_to_save_stages'], model_name = params['name'],)
 
     torch.save(optimizer, params['path_to_save'] + params['name'] + '_optimizer.pt')
     torch.save(model, params['path_to_save'] + params['name'] + '.pt')
