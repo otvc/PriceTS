@@ -42,8 +42,11 @@ def train_loop(model, train_dataloader, optimizer, criterion, batch_transform, d
         
         output = model(X_batch)
         loss = criterion(output, y_batch)
-        losses.append(loss.detach().cpu())
+
+        optimizer.zero_grad()
         loss.backward()
+        # print(output,y_batch)
+        losses.append(loss.detach().cpu())
         
         optimizer.step()
     return torch.Tensor(losses).mean()
