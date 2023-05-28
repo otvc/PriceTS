@@ -5,7 +5,7 @@ import torch
 from tqdm import tqdm
 
 
-def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_price', device = 'cpu'):
+def dict_to_input(batch_dict, feature_keys, cat_feature, target = 'target_sales_units', device = 'cpu'):
     feat_iter = iter(feature_keys)
     
     batch = batch_dict[next(feat_iter)]
@@ -121,7 +121,7 @@ def unpack_CatEmbLSTM(batch,
                       numeric_features = ['StoreInventory', 'sales_cost_x', 'sales_value', 'price', 'cost', 'sales_cost_y'],
                       cat_features = ['price_zone_&_class_name'],
                       device = 'cpu'):
-    return dict_to_input(batch, numeric_features, cat_features[0], target = 'target_price', device = device)
+    return dict_to_input(batch, numeric_features, cat_features[0], target = 'target_sales_units', device = device)
 
 def train_CatEmbLSTM(model,
                      train_dataloader,

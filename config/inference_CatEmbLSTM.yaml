@@ -4,7 +4,7 @@ dataset:
   batch_size: 64
   num_workers: 1
   lag: 14
-  target: 'price'
+  target: 'sales_units'
 
 model:
   path: models/CatEmbLSTM.pt
