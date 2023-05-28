@@ -12,10 +12,10 @@ from utils import  plot_predict_process
               help="Path to csv dataframe with\
               ground truth and predicted val.")
 @click.option("--pzcn",
-              default=4,
+              default=8,
               help="Price zone and class_name,")
 @click.option("--store",
-              default=101,
+              default=1,
               help="Id of store.")
 @click.option("--item",
               default=70054,

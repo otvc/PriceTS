@@ -63,7 +63,7 @@ def choose_model(params):
     else:
         if params['optimizer'] == 'Adam':
             BETAS = params['model']['BETAS']#(0.999, 0.999)
-            optimizer = optim.Adam(model.parameters(), lr = LR, betas = BETAS)
+            optimizer = optim.AdamW(model.parameters(), lr = LR, betas = BETAS)
         elif params['optimizer'] == 'SGD':
             optimizer = optim.SGD(model.parameters(), lr = LR)
     
@@ -87,9 +87,9 @@ if __name__ == '__main__':
     REDUCTION = 'mean'
 
     if params['loss_type'] == 'L1':
-        criterion = nn.L1Loss(reduce=REDUCTION)
+        criterion = nn.L1Loss(reduction=REDUCTION)
     elif params['loss_type'] == 'L2':
-        criterion = nn.MSELoss(reduction = REDUCTION)
+        criterion = nn.MSELoss(reduction=REDUCTION)
 
     EPOCHS = params['model']['EPOCHS']#5
 

@@ -29,7 +29,6 @@ class MilkTSDataset(Dataset):
         self.features = features
         self.n_prev_days = n_prev_days
         self.target = target
-        
         self.data = data[(data['class_name'] == class_name) & (data['store'] == store) & (data['item'] == item)]
         self.total_count = max(0, len(self.data) - n_prev_days)
     
@@ -92,6 +91,7 @@ def create_dataset_by_concat(data,
                                    n_prev_days = n_prev_days)
             if len(cur_ds) > 0:
                 datasets.append(cur_ds)
+                break
         break
     dataset = ConcatDataset(datasets)
     # print(dataset.datasets[0].data['sales_units'].unique())

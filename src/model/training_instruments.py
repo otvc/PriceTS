@@ -41,7 +41,7 @@ def train_loop(model, train_dataloader, optimizer, criterion, batch_transform, d
         X_batch, y_batch = batch_transform(batch, device = device)
         
         output = model(X_batch)
-        loss = criterion(output, y_batch)
+        loss = torch.sqrt(criterion(output, y_batch))
 
         optimizer.zero_grad()
         loss.backward()
@@ -56,7 +56,7 @@ def val_loop(model, dataloader, criterion, batch_transform, device = 'cpu'):
     for batch in dataloader:
         X_batch, y_batch = batch_transform(batch, device = device)
         output = model(X_batch)
-        loss = criterion(output, y_batch)
+        loss = torch.sqrt(criterion(output, y_batch))
         losses.append(loss.detach().cpu())
     return torch.Tensor(losses).mean()
 
