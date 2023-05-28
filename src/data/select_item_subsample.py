@@ -12,7 +12,7 @@ import click
               default="data/output/pd_milk_data_item.csv",
               help="Path to save new dataset")
 @click.option("--item",
-              default=38,
+              default=70054,
               help="Id of particular item.")
 def select_ts_by_item(load:str,
                       save:str,

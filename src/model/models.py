@@ -22,6 +22,6 @@ class CatEmbLSTM(nn.Module):
         cat_emb = cat_emb.view(cat_emb.shape[0], cat_emb.shape[1], cat_emb.shape[-1])
         input_feat = torch.cat([normalized_num_feat, cat_emb], dim = -1)
         output_feat, (hn, cn) = self.rnn(input_feat)
-        input_reg = output_feat.sum(1)
+        input_reg = output_feat.mean(1)
         output = self.lin_reg(input_reg)
         return output.view(-1)

@@ -37,7 +37,7 @@ class MilkTSDataset(Dataset):
         return self.total_count
     
     def __getitem__(self, idx):
-        output = {'target_price':self.data.iloc[idx + self.n_prev_days][self.target]}
+        output = {'target_sales_units':self.data.iloc[idx + self.n_prev_days][self.target]}
         output = dict(self.data[self.features].iloc[idx:idx + self.n_prev_days].to_dict('list'), **output)
         return output
         
@@ -86,13 +86,15 @@ def create_dataset_by_concat(data,
         for item in df_cn_item.loc[cls_store].values[0]:
             cur_ds = MilkTSDataset(str(cls_store[0]), cls_store[1], 
                                    item, 
-                                   data, 
+                                   data,
+                                   target='sales_units',
                                    features = numeric_features + cat_features,
                                    n_prev_days = n_prev_days)
             if len(cur_ds) > 0:
                 datasets.append(cur_ds)
-
+        break
     dataset = ConcatDataset(datasets)
+    # print(dataset.datasets[0].data['sales_units'].unique())
     return dataset
 
 def train_test_split(data,

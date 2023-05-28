@@ -1,11 +1,11 @@
 to_float_point_feat: ['StoreInventory', 'wasted_units', 'wasted_cost']
 nan_features: ['sales_cost_x', 'sales_units', 'sales_value', 'wasted_units', 'wasted_cost', 'sales_cost_y']
-numeric_features: ['StoreInventory', 'sales_cost_x', 'sales_value', 'price', 'cost', 'sales_cost_y']
+numeric_features: ['StoreInventory', 'sales_cost_x', 'sales_value', 'price', 'cost', 'sales_cost_y', 'sales_units']
 cat_features: ['price_zone_&_class_name']
 date_feature: 'date'
 ts_by_features: ['class_name', 'item', 'store']
-date_split: 2023-03-01
-n_prev_days: 5
+date_split: 2023-02-14
+n_prev_days: 14
 
 is_train_process: true
 

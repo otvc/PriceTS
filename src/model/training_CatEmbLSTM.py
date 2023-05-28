@@ -46,7 +46,7 @@ def choose_model(params):
     N_EMB_CLS = milk_clean[params['dataset']['cat_feature']].unique().shape[0]
     EMB_H = params['model']['EMB_H']#32
 
-    NUM_INPUT_SIZE = len(test_dataset[0].keys()) - 2
+    NUM_INPUT_SIZE = len(test_dataset[0].keys()) - 3
     LSTM_H = params['model']['LSTM_H']#128
     LSTM_NUM_LAYERS = params['model']['LSTM_NUM_LAYERS']#1
 
@@ -67,7 +67,7 @@ def choose_model(params):
         elif params['optimizer'] == 'SGD':
             optimizer = optim.SGD(model.parameters(), lr = LR)
     
-    scheduler = LinearLR(optimizer=optimizer, start_factor=1.0, end_factor=0.01, total_iters=params['model']['EPOCHS'])
+    scheduler = LinearLR(optimizer=optimizer, start_factor=1.0, end_factor=1.0, total_iters=params['model']['EPOCHS'])
     
     return model, optimizer, scheduler
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     params = load_config_params()
 
     BATCH_SIZE = params['dataset']['BATCH_SIZE']#256
-    is_shuffle = params['dataset']['is_shuffle']#True
+    is_shuffle = params['dataset']['is_shuffle']#False
 
     train_dataset, test_dataset = load_dataset(params['dataset']['path_to_train'], params['dataset']['path_to_test'])
 

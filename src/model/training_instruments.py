@@ -73,8 +73,8 @@ def save_stage(model:torch.nn.Module,
                path_to_save:str, 
                model_name:str, 
                stage_num:int):
-    torch.save(model, path_to_save + model_name + '_optimizer' + '_' + str(stage_num) + '.pt')
-    torch.save(optim, path_to_save + model_name + '_' + str(stage_num) + '.pt')
+    torch.save(optim, path_to_save + model_name + '_optimizer' + '_' + str(stage_num) + '.pt')
+    torch.save(model, path_to_save + model_name + '_' + str(stage_num) + '.pt')
 
 
 '''

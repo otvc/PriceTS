@@ -6,27 +6,26 @@ dataset:
   path_to_train: data/input/train_dataset.pt
   path_to_test: data/input/test_dataset.pt
   path_to_clean: data/input/milk_clean.csv
-  BATCH_SIZE: 64
+  BATCH_SIZE: 128
   is_shuffle: false 
   cat_feature: price_zone_&_class_name
   num_workers: 1
 
 
 model:
-  LSTM_H: 64
+  LSTM_H: 128
   LSTM_NUM_LAYERS: 1
   EMB_H: 32
-  LR: 0.003
-  BETAS: [0.5, 0.999]
+  LR: 0.0001
+  BETAS: [0.999, 0.999]
   EPOCHS: 100
 
 fine-tune:
   use_saved_model: false
-  model_path: models/CatEmbLSTM.pt
-  optimizer_path: models/CatEmbLSTM_optimizer.pt
+  model_path: models/stages/CatEmbLSTM_349.pt
+  optimizer_path: models/CatEmbLSTM_349_optimizer.pt
 
 loss_type: 'L1'
 
-optimizer: 'SGD'
-
+optimizer: 'Adam'
 

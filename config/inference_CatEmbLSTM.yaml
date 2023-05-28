@@ -3,7 +3,7 @@ dataset:
   path_to_output: data/output/inf_CatEmbLSTM.csv
   batch_size: 64
   num_workers: 1
-  lag: 5
+  lag: 14
   target: 'price'
 
 model:

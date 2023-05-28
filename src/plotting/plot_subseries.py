@@ -12,13 +12,13 @@ from utils import  plot_predict_process
               help="Path to csv dataframe with\
               ground truth and predicted val.")
 @click.option("--pzcn",
-              default=7,
+              default=4,
               help="Price zone and class_name,")
 @click.option("--store",
-              default=1,
+              default=101,
               help="Id of store.")
 @click.option("--item",
-              default=38,
+              default=70054,
               help="Id of item.")
 def forecast_item_price_zone(read:str,
                              pzcn:int,
@@ -38,7 +38,7 @@ def forecast_item_price_zone(read:str,
     store_column = 'store'
     item_column = 'item'
     predict_column = 'predicted'
-    target_column = 'price'
+    target_column = 'sales_units'
     data = pd.read_csv(read)
     data = data[(data[przc_column] == pzcn) &
                 (data[store_column] == store) &
